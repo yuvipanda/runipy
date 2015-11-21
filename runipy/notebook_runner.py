@@ -63,8 +63,9 @@ class NotebookRunner(object):
             pylab=False,
             mpl_inline=False,
             profile_dir=None,
-            working_dir=None):
-        self.km = KernelManager()
+            working_dir=None,
+            kernel_name='python'):
+        self.km = KernelManager(kernel_name=kernel_name)
 
         args = []
 
