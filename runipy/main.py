@@ -103,6 +103,12 @@ def main():
         '--profile-dir',
         help="set the profile location directly"
     )
+    parser.add_argument(
+        '--output-nbformat-version',
+        help='nbformat major version to write output in',
+        default=3,
+        type=int
+    )
     args = parser.parse_args()
 
     if args.overwrite:
@@ -166,8 +172,8 @@ def main():
         logging.info('Saving to %s', args.output_file)
         with open(args.output_file, 'w') as output_filehandle:
             try:
-                # Ipython 3
-                write(nb_runner.nb, output_filehandle, 3)
+                # Ipython 3/4
+                write(nb_runner.nb, output_filehandle, args.output_nbformat_version)
             except (TypeError, NBFormatError):
                 # Ipython 2
                 write(nb_runner.nb, output_filehandle, 'json')
