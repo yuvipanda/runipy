@@ -30,10 +30,6 @@ with warnings.catch_warnings():
         # IPython 4
         from nbformat import NotebookNode
         from jupyter_client import KernelManager
-    except ImportError:
-        # IPython 2
-        from IPython.kernel import KernelManager
-        from IPython.nbformat.current import NotebookNode
     finally:
         warnings.resetwarnings()
 

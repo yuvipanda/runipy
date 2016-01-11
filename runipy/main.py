@@ -23,19 +23,13 @@ with warnings.catch_warnings():
         from IPython.config import Config
         from IPython.nbconvert.exporters.html import HTMLExporter
         from IPython.nbformat import \
-            convert, current_nbformat, reads, write, NBFormatError
+            convert, current_nbformat, reads, write
     except ShimWarning:
         # IPython 4
         from traitlets.config import Config
         from nbconvert.exporters.html import HTMLExporter
         from nbformat import \
-            convert, current_nbformat, reads, write, NBFormatError
-    except ImportError:
-        # IPython 2
-        from IPython.config import Config
-        from IPython.nbconvert.exporters.html import HTMLExporter
-        from IPython.nbformat.current import \
-            convert, current_nbformat, reads, write, NBFormatError
+            convert, current_nbformat, reads, write
     finally:
         warnings.resetwarnings()
 
@@ -152,12 +146,8 @@ def main():
         profile_dir = None
 
     logging.info('Reading notebook %s', payload_source)
-    try:
-        # Ipython 3
-        nb = reads(payload, 3)
-    except (TypeError, NBFormatError):
-        # Ipython 2
-        nb = reads(payload, 'json')
+    # Ipython 3/4
+    nb = reads(payload, 3)
     nb_runner = NotebookRunner(
         nb, args.pylab, args.matplotlib, profile_dir, working_dir
     )
@@ -171,20 +161,11 @@ def main():
     if args.output_file and args.output_file != '-':
         logging.info('Saving to %s', args.output_file)
         with open(args.output_file, 'w') as output_filehandle:
-            try:
-                # Ipython 3/4
-                write(nb_runner.nb, output_filehandle, args.output_nbformat_version)
-            except (TypeError, NBFormatError):
-                # Ipython 2
-                write(nb_runner.nb, output_filehandle, 'json')
+            # Ipython 3/4
+            write(nb_runner.nb, output_filehandle, args.output_nbformat_version)
 
     if args.stdout or args.output_file == '-':
-        try:
-            # Ipython 3
-            write(nb_runner.nb, stdout, args.output_nbformat_version)
-        except (TypeError, NBFormatError):
-            # Ipython 2
-            write(nb_runner.nb, stdout, 'json')
+        write(nb_runner.nb, stdout, args.output_nbformat_version)
         print()
 
     if args.html is not False:
